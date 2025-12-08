@@ -1,0 +1,65 @@
+% Титульный лист
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+
+\onlyinsubfile{
+    \renewcommand{\contentsname}{ОГЛАВЛЕНИЕ}
+    \setcounter{tocdepth}{3}
+    \tableofcontents
+}
+
+\thispagestyle{empty}
+\normalsize
+\begin{center}
+{\fontsize{16}{16}\selectfont \textbf{МИНИСТЕРСТВО ОБРАЗОВАНИЯ РЕСПУБЛИКИ БЕЛАРУСЬ БЕЛОРУССКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ ФАКУЛЬТЕТ ПРИКЛАДНОЙ МАТЕМАТИКИ И ИНФОРМАТИКИ}} \\
+{\fontsize{16}{16}\selectfont \textbf{Кафедра биомедицинской информатики}}
+\end{center}
+\vspace{4ex}
+\normalsize
+
+\normalsize
+\vspace{20ex}
+\begin{center}
+
+\textbf{ИССЛЕДОВАНИЕ МЕТОДОВ ПРЕДСТАВЛЕНИЯ И ГЕНЕРАЦИИ МОЛЕКУЛЯРНЫХ СТРОК С ИСПОЛЬЗОВАНИЕМ РЕКУРРЕНТНЫХ НЕЙРОННЫХ СЕТЕЙ}\\
+\vspace{2ex}
+\text{Курсовой проект}
+
+\end{center}
+
+
+\normalsize
+\vspace{10ex}
+\begin{minipage}{0.4\textwidth}
+  \begin{flushleft}
+$\,$\\
+$\,$\\
+$\,$\\
+$\,$\\
+\end{flushleft}
+\end{minipage}
+$\quad$
+\begin{minipage}{0.5\textwidth}
+  \begin{flushleft}
+Кондратёнка Владимира Васильевича\\
+обучающегося 3 курса\\
+специальности "информатика"\\
+\vspace{2ex}
+Научный руководитель:\\
+старший преподаватель,\\
+А.Д. Карпенко\\
+  \end{flushleft}
+\end{minipage}
+
+
+\vskip 0 cm plus 1 fil
+\begin{center}
+Минск, 2025
+\end{center}
+\eject
+
+\onlyinsubfile{
+    \subfile{../backmatter/bibliography}
+}
+
+\end{document}

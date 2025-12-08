@@ -1,0 +1,60 @@
+% !BIB program = biber
+% !TEX root = main.tex
+
+\documentclass{../settings/Rep2-105}
+
+\input{../settings/settings}
+\input{../settings/shortcuts}
+
+\usepackage{csquotes}
+
+\usepackage[
+    backend=biber,    
+    style=gost-numeric,
+    sortcites=true, 
+    language=auto,    
+    autolang=other,   
+    sorting=none
+]{biblatex}
+
+% Путь к библиографии должен быть относительно main.tex
+\addbibresource{backmatter/references.bib}
+
+\usepackage[
+    unicode=true,
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue,
+    bookmarks=true,
+    bookmarksnumbered=true,
+    pdfencoding=unicode
+]{hyperref}
+
+\begin{document}
+
+\renewcommand{\onlyinsubfile}[1]{}
+\renewcommand{\notinsubfile}[1]{#1}
+
+\subfile{frontmatter/titlepage.tex}
+
+\setcounter{page}{2}
+\renewcommand{\contentsname}{СОДЕРЖАНИЕ}
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\subfile{frontmatter/notations.tex}
+
+\subfile{frontmatter/introduction.tex}
+
+\subfile{chapters/chapter1.tex}
+
+\subfile{chapters/chapter2.tex}
+
+\subfile{chapters/chapter3.tex}
+
+\subfile{backmatter/conclusion.tex}
+
+\printbibliography[heading=bibintoc, title={Библиографический список}]
+
+\end{document}
