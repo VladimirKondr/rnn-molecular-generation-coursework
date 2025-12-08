@@ -43,37 +43,9 @@ jobs:
 
     - name: Build PDF from LaTeX
       run: |
-        cd sources
+        ./build.sh
         
-        echo "=== Шаг 1/4: Первая компиляция XeLaTeX ==="
-        xelatex -interaction=nonstopmode main.tex
         
-        echo ""
-        echo "=== Шаг 2/4: Обработка библиографии (biber) ==="
-        biber main
-        
-        echo ""
-        echo "=== Проверка .blg файла ==="
-        cat main.blg || echo "main.blg not found"
-        
-        echo ""
-        echo "=== Шаг 3/4: Вторая компиляция XeLaTeX ==="
-        xelatex -interaction=nonstopmode main.tex
-        
-        echo ""
-        echo "=== Шаг 4/4: Финальная компиляция XeLaTeX ==="
-        xelatex -interaction=nonstopmode main.tex
-        
-        echo ""
-        echo "=== Очистка временных файлов ==="
-        rm -f *.aux *.log *.out *.toc *.bbl *.bcf *.blg *.run.xml *.fls *.fdb_latexmk *.synctex.gz *.nav *.snm *.vrb *.lof *.lot
-        
-        cd ..
-        
-        echo ""
-        echo "=== Копирование PDF в корень ==="
-        cp sources/main.pdf ./main.pdf
-        ls -lh main.pdf
     
     - name: Commit and Push PDF
       if: github.event_name == 'push'
