@@ -15,17 +15,43 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Install TeX Live
+    - name: Install TeX Live and dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y \
           texlive-xetex \
           texlive-latex-extra \
           texlive-fonts-extra \
+          texlive-fonts-recommended \
           texlive-lang-cyrillic \
           texlive-bibtex-extra \
           biber \
-          fonts-liberation
+          fonts-liberation \
+          fonts-dejavu \
+          fonts-dejavu-core \
+          fonts-dejavu-extra \
+          fontconfig
+    
+    - name: Install Microsoft Core Fonts
+      run: |
+        echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections
+        sudo apt-get install -y ttf-mscorefonts-installer
+    
+    - name: Install Times New Roman equivalent
+      run: |
+        sudo apt-get install -y \
+          fonts-liberation2 \
+          fonts-crosextra-carlito \
+          fonts-crosextra-caladea
+        
+        # Обновляем кэш шрифтов
+        sudo fc-cache -f -v
+        
+        # Проверяем доступные шрифты
+        echo "Доступные шрифты Times:"
+        fc-list | grep -i times || echo "Times New Roman не найден, будет использован Liberation Serif"
+        echo "Доступные кириллические шрифты:"
+        fc-list :lang=ru | head -10
     
     - name: Build PDF
       run: |
