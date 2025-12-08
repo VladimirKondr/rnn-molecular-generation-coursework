@@ -1,14 +1,18 @@
-name: Build LaTeX Document
+name: Build and Deploy LaTeX Document
 
 on:
   push:
     branches: [ main, master ]
+    tags: [ 'v*.*' ]
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
-  build:
+  build_and_deploy:
+    permissions:
+      contents: write 
+
     runs-on: ubuntu-latest
     
     steps:
@@ -18,19 +22,7 @@ jobs:
     - name: Install TeX Live and dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y \
-          texlive-xetex \
-          texlive-latex-extra \
-          texlive-fonts-extra \
-          texlive-fonts-recommended \
-          texlive-lang-cyrillic \
-          texlive-bibtex-extra \
-          biber \
-          fonts-liberation \
-          fonts-dejavu \
-          fonts-dejavu-core \
-          fonts-dejavu-extra \
-          fontconfig
+        sudo apt-get install -y texlive-xetex texlive-latex-extra texlive-fonts-extra texlive-fonts-recommended texlive-lang-cyrillic texlive-bibtex-extra biber fonts-liberation fonts-dejavu fonts-dejavu-core fonts-dejavu-extra fontconfig
     
     - name: Install Microsoft Core Fonts
       run: |
@@ -39,57 +31,48 @@ jobs:
     
     - name: Install Times New Roman equivalent
       run: |
-        sudo apt-get install -y \
-          fonts-liberation2 \
-          fonts-crosextra-carlito \
-          fonts-crosextra-caladea
-        
-        # Обновляем кэш шрифтов
+        sudo apt-get install -y fonts-liberation2 fonts-crosextra-carlito fonts-crosextra-caladea
         sudo fc-cache -f -v
-        
-        # Проверяем доступные шрифты
-        echo "Доступные шрифты Times:"
-        fc-list | grep -i times || echo "Times New Roman не найден, будет использован Liberation Serif"
-        echo "Доступные кириллические шрифты:"
-        fc-list :lang=ru | head -10
-    
-    - name: Build PDF
+
+    - name: Build PDF from LaTeX
       run: |
+        # Убеждаемся, что скрипт сборки исполняемый
         chmod +x build.sh
+        # Запускаем сборку
         ./build.sh
-    
-    - name: Copy PDF to root
-      run: |
+        # Копируем результат в корень, если он не там
         cp sources/main.pdf ./main.pdf
-        echo "PDF файл создан: main.pdf"
-        ls -lh main.pdf
     
-    - name: Commit PDF to repository
+    - name: Commit and Push PDF
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Добавляем сгенерированный PDF в отслеживаемые файлы
         git add main.pdf
-        git diff --staged --quiet || git commit -m "Auto-build: Update main.pdf [skip ci]"
-    
-    - name: Push changes
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
-    
-    - name: Upload PDF as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: main-pdf
-        path: main.pdf
-        retention-days: 30
-    
-    - name: Upload PDF to release (if tag)
+        
+        # Проверяем, есть ли изменения. Если есть, делаем коммит.
+        # `git diff --staged --quiet || ...` означает "если есть изменения, то выполнить..."
+        if ! git diff --staged --quiet; then
+          git commit -m "Automated build: Update main.pdf [skip ci]"
+          # Используем стандартный git push, так как checkout@v4 настраивает токен
+          git push
+        else
+          echo "No changes to commit in main.pdf."
+        fi
+      
+    - name: Create Release and Upload PDF
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
         files: main.pdf
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload PDF as build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: main-pdf
+        path: main.pdf
+        retention-days: 7
