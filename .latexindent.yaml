@@ -1,0 +1,74 @@
+# Конфигурация latexindent для переноса по предложениям
+
+# Базовые настройки отступов
+defaultIndent: '    '
+
+# Настройки модификации переносов строк
+modifyLineBreaks:
+  # Одно предложение на строку
+  oneSentencePerLine:
+    manipulateSentences: 1
+    
+    # Как определяем конец предложения
+    sentencesEndWith:
+      basicFullStop: 1
+      exclamationMark: 1
+      questionMark: 1
+      other: '\.'
+    
+    # После чего может начинаться предложение
+    sentencesFollow:
+      par: 1
+      blankLine: 1
+      fullStop: 1
+      exclamationMark: 1
+      questionMark: 1
+      rightBrace: 1
+      commentOnPreviousLine: 1
+      other: 0
+    
+    # Как определяем начало предложения (с заглавной буквы)
+    sentencesBeginWith:
+      A-Z: 1
+      a-z: 0
+      other: 0
+    
+    # Исключения - аббревиатуры, которые НЕ являются концом предложения
+    sentencesDoNOTcontain:
+      - 'e\.g\.'
+      - 'i\.e\.'
+      - 'etc\.'
+      - 'et al\.'
+      - 'cf\.'
+      - 'vs\.'
+      - 'т\.е\.'
+      - 'т\.д\.'
+      - 'т\.к\.'
+      - 'т\.п\.'
+      - 'и т\.д\.'
+      - 'и т\.п\.'
+      - 'см\.'
+      - 'стр\.'
+      - 'рис\.'
+      - 'табл\.'
+      - 'гл\.'
+      - 'п\.'
+  
+  # Настройки переноса длинных строк (после разбиения по предложениям)
+  textWrapOptions:
+    columns: 100
+    huge: overflow
+    separator: " "
+    when: after
+    perCodeBlockBasis: 1
+  
+  # Убираем лишние переносы в параграфах перед обработкой
+  removeParagraphLineBreaks:
+    all: 1
+    beforeTextWrap: 1
+    alignAtAmpersandTakesPriority: 1
+    paragraphsStopAt:
+      environments: 1
+      verbatim: 1
+      filecontents: 1
+      comments: 1
