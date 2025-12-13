@@ -2,6 +2,10 @@
 
 cd sources
 
+echo ""
+echo "Очистка временных файлов..."
+rm -f *.aux *.log *.out *.toc *.bbl *.bcf *.blg *.run.xml *.fls *.fdb_latexmk *.synctex.gz *.nav *.snm *.vrb *.lof *.lot
+
 echo "Шаг 1/4: Первая компиляция XeLaTeX..."
 xelatex -interaction=nonstopmode main.tex > /dev/null
 
