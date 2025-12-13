@@ -1,4 +1,3 @@
-# LaTeX временные файлы
 *.aux
 *.log
 *.out
@@ -27,10 +26,9 @@
 *.ist
 *.loa
 
-# PDF файлы (генерируемые)
 *.pdf
-# Исключение: разрешаем main.pdf в корне (создается CI/CD)
 !main.pdf
+!presentation.pdf
 
 *-blx.bib
 
