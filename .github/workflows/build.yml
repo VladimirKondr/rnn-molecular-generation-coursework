@@ -83,6 +83,8 @@ jobs:
     
     - name: Build PDF from LaTeX
       run: |
+        pwd
+        ls -la
         ./build.sh
         ./build_presentation.sh
         
