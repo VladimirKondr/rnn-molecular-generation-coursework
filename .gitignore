@@ -56,3 +56,5 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 advice.txt
+
+.vscode/
