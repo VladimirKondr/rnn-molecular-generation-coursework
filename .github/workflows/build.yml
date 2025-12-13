@@ -1,4 +1,4 @@
-name: Build and Deploy LaTeX Document
+name: Build and deploy latex document
 
 on:
   push:
@@ -45,7 +45,7 @@ jobs:
       - name: convert repository name to lowercase
         id: string
         run: |
-          echo "repository_lowercase=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+          echo "repository_lowercase=ghcr.io/$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: build and push docker image
         uses: docker/build-push-action@v5
@@ -92,7 +92,7 @@ jobs:
         git add presentation.pdf
         
         if ! git diff --staged --quiet; then
-          git commit -m "Automated build: Update main.pdf and presentation.pdf [skip ci]"
+          git commit -m "Automated build: Update main.pdf and presentation.pdf"
           git push
         else
           echo "No changes to commit in main.pdf."
