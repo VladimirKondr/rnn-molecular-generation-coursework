@@ -18,5 +18,3 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN fc-cache -f -v
 
 WORKDIR /github/workspace
-
-# 2

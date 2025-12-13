@@ -9,36 +9,69 @@ on:
   workflow_dispatch:
 
 jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    
+    outputs:
+      image_name: ${{ steps.string.outputs.repository_lowercase }}
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+      
+      - name: check for dockerfile changes
+        uses: tj-actions/changed-files@v44
+        id: changed-files
+        with:
+          files: .github/docker/Dockerfile
+      
+      - name: set up docker buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: image=moby/buildkit:master
+
+      - name: log in to the container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: convert repository name to lowercase
+        id: string
+        run: |
+          echo "repository_lowercase=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      - name: build and push docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .github/docker
+          push: true
+          tags: ghcr.io/${{ steps.string.outputs.repository_lowercase }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+
+
   build_and_deploy:
     permissions:
       contents: write 
 
     runs-on: ubuntu-latest
+
+    container:
+      image: ghcr.io/${{ github.repository }}:latest
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Install TeX Live and dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y texlive-full biber
-        
-        echo "Проверка biblatex-gost..."
-        kpsewhich gost-numeric.bbx || echo "Warning: gost-numeric.bbx not found"
-        
-        biber --version
-    
-    - name: Install Microsoft Core Fonts
-      run: |
-        echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | sudo debconf-set-selections
-        sudo apt-get install -y ttf-mscorefonts-installer
-    
-    - name: Install Times New Roman equivalent
-      run: |
-        sudo apt-get install -y fonts-liberation2 fonts-crosextra-carlito fonts-crosextra-caladea
-        sudo fc-cache -f -v
-
     - name: Build PDF from LaTeX
       run: |
         ./build.sh
