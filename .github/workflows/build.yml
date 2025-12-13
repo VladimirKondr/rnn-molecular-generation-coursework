@@ -81,12 +81,21 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
+    - name: Pull Docker image
+      run: docker pull ${{ needs.build-image.outputs.image_name }}:latest
+
     - name: Build PDF from LaTeX
       run: |
-        pwd
-        ls -la
-        ./build.sh
-        ./build_presentation.sh
+        docker run --rm \
+          -v ${{ github.workspace }}:/workspace \
+          -w /workspace \
+          ${{ needs.build-image.outputs.image_name }}:latest \
+          ./build.sh
+        docker run --rm \
+          -v ${{ github.workspace }}:/workspace \
+          -w /workspace \
+          ${{ needs.build-image.outputs.image_name }}:latest \
+          ./build_presentation.sh
         
     - name: Commit and Push PDF
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
