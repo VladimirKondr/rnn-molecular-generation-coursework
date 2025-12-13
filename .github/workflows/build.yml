@@ -66,7 +66,7 @@ jobs:
       packages: read
 
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -90,7 +90,6 @@ jobs:
     - name: Commit and Push PDF
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
-        chown -R $(stat -c %u:%g /github/workspace) /github/workspace
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         
