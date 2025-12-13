@@ -15,7 +15,7 @@ rm -f *.aux *.log *.out *.toc *.bbl *.bcf *.blg *.run.xml *.fls *.fdb_latexmk *.
 cd ..
 
 echo "Копирование PDF в корень проекта..."
-cp sources/presentation.pdf ./presentation.pdf
+mv sources/presentation.pdf ./presentation.pdf
 
 echo ""
 echo "========================================"
