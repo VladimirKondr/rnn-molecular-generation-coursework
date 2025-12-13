@@ -115,4 +115,3 @@ jobs:
         path: |
           main.pdf
           presentation.pdf
-        retention-days: 7
